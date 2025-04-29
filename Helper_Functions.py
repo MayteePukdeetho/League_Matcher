@@ -167,7 +167,7 @@ def region_finder():
     This is just here to ask for someones region for info purposes. it's a function because I can re-prompt recursively.
     :return:
     '''
-    region = input("What is your region?\n"
+    region = input("What is that persons region?\n"
                    "Type in 1 for in the Americas, 2 for Europe, 3 for Asia, and 4 for SEA (and OCE regions). \n")
     try:
         region = int(region)

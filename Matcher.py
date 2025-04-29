@@ -94,10 +94,8 @@ def comparer(list_of_dataframes):
     everyone_teammates_pool = []
     for dataframe in list_of_dataframes:
         if 'Teammates' in dataframe.columns:
-            hashable_data_type = []
-            for teammate in dataframe['Teammates']:
-                hashable_data_type.extend(teammate)
-            x_person_preferred = set(hashable_data_type)
+            teammates_in_all_games = dataframe['Teammates'].explode()
+            x_person_preferred = set(teammates_in_all_games)
 
             everyone_teammates_pool.append(x_person_preferred)
 
