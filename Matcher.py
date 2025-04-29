@@ -57,5 +57,4 @@ def favourite_champions(puuid, region, api_key):
 
     return summary.sort_values(by='win_rate', ascending=False)
 
-print(favourite_champions(my_puuid, 'americas', api_key))
 

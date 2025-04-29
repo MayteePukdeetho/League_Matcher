@@ -10,9 +10,33 @@ https://developer.riotgames.com/
 MAKE AN ACCOUNT HERE, AND CLICK ON YOUR USERNAME ON THE TOP RIGHT, COPY AND PASTE IT INTO THE STRING BELOW
 I WILL ALSO BE UPDATING THIS IN GITHUB DAILY UNTIL THE END OF THE SEMESTER:
 GITHUB LINK:
-
+https://github.com/MayteePukdeetho/League_Matcher
 '''
+'''
+Essentially most of these functions are:
+what type of data you are inputting ->
+oh you need this link to get the data ->
+request data using requester ->
+get the data your looking for
+'''
+
+
 api_key = "RGAPI-0ba4d851-6947-4ac1-9737-cf14446e82be"
+def requester(api_url):
+    '''
+    This calls the api for us using the url provided and checks if we're being rate limited or not.
+    If we are, then it stops for 60 seconds and tries again.
+    :param api_url:
+    :return:
+    '''
+    while True:
+        resp = requests.get(api_url)
+        if resp.status_code == 429:
+            print("rate limited, Riot API gives us 200 calls for 2 minutes... Trying again in 1 minute.")
+            time.sleep(60)
+        else:
+            return resp
+
 def riot_ID_to_PUUID(region, game_name, tag_line, api_key ):
     """
     Calls the riot API to get a persons PUUID (needed for other API calls) from a username).
@@ -60,6 +84,14 @@ print(PUUID_to_Matches(my_puuid, "americas", api_key))
 matches_to_analyze = PUUID_to_Matches(my_puuid, "americas", api_key)
 
 
+'''
+A quick sidenote of RIOT API matchdata:
+Essentially it's a really, really, big dictionary, made out of two, big dictionaries.
+The first one is metadata, which basically shows the match_id and the participants using their puuid.
+The second one is info, where, well, the info of the game is held. I'll be commenting on what each line does throughout.
+Most keys are self-explanatory.
+'''
+
 def Matches_to_Match_Data(region, match_id, api_key):
     """
     gets data about a certain match.
@@ -91,8 +123,11 @@ def Match_Data_To_Player_Data(match_data, puuid):
     :return: a slightly smaller dictionary.
     """
 
+    #get everyones puuid
     participants = match_data['metadata']['participants']
+    #match it with the one we provided
     player_index = participants.index(puuid)
+    #get the data we want
     player_data = match_data['info']['participants'][player_index]
 
     return player_data
@@ -102,9 +137,11 @@ def Team_Comp_Finder(match_data, puuid):
     team_comp = []
     player_of_interest = None
 
+    #for everyone....
     for participant in match_data['info']['participants']:
         if participant['puuid'] == puuid:
             player_of_interest = participant
+            #this is what champion the target played.
             champion_played = participant['championName']
             break
 
@@ -118,23 +155,9 @@ def Team_Comp_Finder(match_data, puuid):
             team_comp.append(participant['championName'])
 
 
-
+    #Did they win as a true or false.
     winner = player_of_interest['win']
     return team_comp, champion_played, winner
 
 
 
-def requester(api_url):
-    '''
-    This calls the api for us using the url provided and checks if we're being rate limited or not.
-    If we are, then it stops for 60 seconds and tries again.
-    :param api_url:
-    :return:
-    '''
-    while True:
-        resp = requests.get(api_url)
-        if resp.status_code == 429:
-            print("rate limited, Riot API gives us 200 calls for 2 minutes... Trying again in 1 minute.")
-            time.sleep(60)
-        else:
-            return resp

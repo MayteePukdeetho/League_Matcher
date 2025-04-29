@@ -12,7 +12,21 @@ tag_line = "NA1"
 region = 1
 
 To be honest, this is like 10% done, I'll be working on it throughout the night, you can find the latest version here:
- 
+ https://github.com/MayteePukdeetho/League_Matcher
+
+To summarize, the end goal of this is to:
+Take 2 accounts
+match them against eachother
+see how well they would do if they hypothetically Duo-Queued up together
+
+Right now, i only have stats to show "Hey, if your teammate plays this, then this is your winrate".
+Theres more nuance including roles and stuff im not including.
+The roadmap is basically is:
+Store 75 games of data for both players - Done
+Analyze the data to see what champions are most effective when played with them - Done
+Cross reference that with the other players champion pool - Not Done
+Compute score/hypothetical winrate - Not done
+Not to mention UI and actual menu stuff.
 
 '''
 
