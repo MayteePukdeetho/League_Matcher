@@ -50,9 +50,12 @@ def favourite_champions(synergy_dataframe):
 
     summary['win_rate'] = (summary['wins'] / summary['games']) * 100
 
-    summary = summary[summary['games'] >= 5]
-
-    return summary.sort_values(by='win_rate', ascending=False).reset_index(drop=True)
+    summary = threshold_filterer(summary)
+    if len(summary) <= 0:
+        return None
+    summary = summary.sort_values(by='win_rate', ascending=False).reset_index(drop=True)
+    print(summary)
+    return summary
 
 
 def main_champions(synergy_dataframe):
@@ -77,9 +80,12 @@ def main_champions(synergy_dataframe):
 
     summary['win_rate'] = (summary['wins'] / summary['games']) * 100
 
-    summary = summary[summary['games'] >= 5]
-
-    return summary.sort_values(by='win_rate', ascending=False).reset_index(drop=True)
+    summary = threshold_filterer(summary)
+    if len(summary) <= 0:
+        return None
+    summary = summary.sort_values(by='win_rate', ascending=False).reset_index(drop=True)
+    print(summary)
+    return summary
 
 
 

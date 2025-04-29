@@ -2,6 +2,8 @@ import requests
 import pandas as pd
 import time
 
+from pandas.core.interchange.dataframe_protocol import DataFrame
+
 '''
 READ!!!!!!!!!! VERY IMPORTANT!!!!!!!!!!
 API KEY EXPIRES EVERY 24 HOURS, NEEDS MANUAL GENERATION.
@@ -52,7 +54,6 @@ def riot_ID_to_PUUID(region, game_name, tag_line, api_key ):
 
     resp = requester(api_url)
     player_info = resp.json()
-    print(player_info)
     puuid = player_info['puuid']
     return puuid
 
@@ -161,3 +162,59 @@ def Team_Comp_Finder(match_data, puuid):
 
 
 
+def region_finder():
+    '''
+    This is just here to ask for someones region for info purposes. it's a function because I can re-prompt recursively.
+    :return:
+    '''
+    region = input("What is your region?\n"
+                   "Type in 1 for in the Americas, 2 for Europe, 3 for Asia, and 4 for SEA (and OCE regions). \n")
+    try:
+        region = int(region)
+    except ValueError:
+        print("Invalid input, try again.")
+        return region_finder()
+    if (region != 1) and (region != 2) and (region != 3) and (region != 4):
+        print("Invalid input. Please try again.")
+        return region_finder()
+    elif region == 1:
+        region = "americas"
+    elif region == 2:
+        region = "europe"
+    elif region == 3:
+        region = "asia"
+    elif region == 4:
+        region = "sea"
+    return region
+
+def threshold_filterer(a_dataframe):
+    """
+    It's here to check if we have enough data to produce a valid output, if not, then lower the requirements for a valid
+    output.
+    :param a_dataframe:
+    :return:
+    """
+    threshold = 5
+    a_dataframe = a_dataframe[a_dataframe['games'] >= threshold]
+    while threshold > 0:
+        if len(a_dataframe) < 3:
+            threshold = threshold - 1
+            a_dataframe = a_dataframe[a_dataframe['games'] >= threshold]
+        else:
+            return a_dataframe
+    print("Huh, did you not play any games?")
+    return a_dataframe.iloc[0:0]
+
+def bug_catcher(an_output):
+    '''
+    Basic checker to see if a function output was valid or not. It's better than the function crashing.
+    :param an_output:
+    :return:
+    '''
+    if isinstance(an_output, pd.DataFrame):
+        if an_output.empty:
+            return False
+        else:
+            return True
+    else:
+        return False

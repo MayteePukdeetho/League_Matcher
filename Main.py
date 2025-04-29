@@ -32,37 +32,59 @@ Compute score/hypothetical winrate - Not done
 Not to mention UI and actual menu stuff.
 
 '''
+def intro():
+    print("Hello! Welcome to the League of Legends Matcher. \n")
+    print("To get started, I need some quick data about yourself, or, whoever your looking for. \n")
+    player_id = input("Whats your player ID? (that would be the string before the #.)\n")
+    tag_line = input("And whats your tagline? (the part after the #.)\n")
+    region = region_finder()
+    try:
+        print("Okay, now lets see if we can find you in the database... \n")
+        user_puuid = riot_ID_to_PUUID(region, player_id, tag_line, api_key)
+    except Exception as e:
+        print(f"Welp, something went wrong, back to the start we go! {e}")
+        return intro()
 
-print("Hello! Welcome to the League of Legends Matcher. \n")
-print("To get started, I need some quick data about yourself, or, whoever your looking for. \n")
-player_id = input("Whats your player ID? (that would be the string before the #.)\n")
-tag_line = input("And whats your tagline? (the part after the #.)\n")
-region = input("What is your region?\n"
-               "Type in 1 for in the Americas, 2 for Europe, 3 for Asia, and 4 for SEA (and OCE regions). \n")
-region = int(region)
-if (region != 1) and (region != 2) and (region != 3) and (region != 4):
-    print("Invalid input. Please try again.")
-elif region == 1:
-    region = "americas"
-elif region == 2:
-    region = "europe"
-elif region == 3:
-    region = "asia"
-elif region == 4:
-    region = "sea"
-try:
-    print("Okay, now lets see if we can find you in the database... \n")
-    user_puuid = riot_ID_to_PUUID(region, player_id, tag_line, api_key)
-except:
-    print("Welp, something went wrong, back to the start we go!")
+    print("Valid User Found, making data... (This might take up to 2 minutes).")
+    person_one_df = get_relevant_data(user_puuid, region, api_key)
+    return person_one_df
 
-print("Alright.... Lets Calculate some data about ya....")
-print("")
+def menu(person_one_df):
+    while True:
+        print("Okay, we got a bunch of data from your, or some other persons, account. Here is the implemented functionality so far: \n")
+        print("0. Exit")
+        print("1. Get winrate from recent games.")
+        print("2. Get winrate from teammates champions.")
+        print("3. Input someone elses account.")
+        option = input("What would you like to know about your account?\n")
 
-person_one_df = get_relevant_data(user_puuid, region, api_key)
-person_one_teammates = favourite_champions(person_one_df)
-person_one_champions = main_champions(person_one_df)
+        if option == "3":
+            data = intro()
+            menu(data)
+            break
+        elif option == "2":
+            person_one_teammates = favourite_champions(person_one_df)
+            good_output = bug_catcher(person_one_teammates)
+            if good_output == True:
+                print(
+                    f"I see... Very interesting... Looks like you win alot with {person_one_teammates.loc[0, 'Teammate']}, "
+                    f"{person_one_teammates.loc[1, 'Teammate']}, and {person_one_teammates.loc[2, 'Teammate']}.\n")
+            else:
+                print("Werid, something went wrong.")
+        elif option == "1":
+            person_one_champions = main_champions(person_one_df)
+            good_output = bug_catcher(person_one_champions)
+            if good_output == True:
+                print(f"When you play {person_one_champions.loc[0, 'Played']}, {person_one_champions.loc[1, 'Played']},"
+                      f" and {person_one_champions.loc[2,'Played']} you win alot. \n")
+            else:
+                print("Werid, something went wrong.")
+        elif option == "0":
+            print("Thanks for using League of Legends matcher!")
+            break
 
-print(f"I see... Very interesting... Looks like you win alot with {person_one_teammates.loc[0,'Teammate']}, {person_one_teammates.loc[1,'Teammate']}, and {person_one_teammates.loc[2,'Teammate']}.\n")
-print(f"And when you play {person_one_champions.loc[0, 'Played']}, {person_one_champions.loc[1, 'Played']}, and {person_one_champions.loc[2,'Played']} you win alot. \n")
-print("Lets see how well an another user would play with you!")
+        else:
+            print("Invalid input! Back from the top.")
+
+data = intro()
+menu(data)
