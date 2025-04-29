@@ -66,19 +66,16 @@ def menu(person_one_df):
             person_one_teammates = favourite_champions(person_one_df)
             good_output = bug_catcher(person_one_teammates)
             if good_output == True:
-                print(
-                    f"I see... Very interesting... Looks like you win alot with {person_one_teammates.loc[0, 'Teammate']}, "
-                    f"{person_one_teammates.loc[1, 'Teammate']}, and {person_one_teammates.loc[2, 'Teammate']}.\n")
+                conclusion_maker(person_one_teammates, 2)
             else:
-                print("Werid, something went wrong.")
+                pass
         elif option == "1":
             person_one_champions = main_champions(person_one_df)
             good_output = bug_catcher(person_one_champions)
             if good_output == True:
-                print(f"When you play {person_one_champions.loc[0, 'Played']}, {person_one_champions.loc[1, 'Played']},"
-                      f" and {person_one_champions.loc[2,'Played']} you win alot. \n")
+                conclusion_maker(person_one_champions, 1)
             else:
-                print("Werid, something went wrong.")
+                pass
         elif option == "0":
             print("Thanks for using League of Legends matcher!")
             break

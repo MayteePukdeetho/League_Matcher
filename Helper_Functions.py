@@ -194,16 +194,23 @@ def threshold_filterer(a_dataframe):
     :param a_dataframe:
     :return:
     """
-    threshold = 5
-    a_dataframe = a_dataframe[a_dataframe['games'] >= threshold]
-    while threshold > 0:
-        if len(a_dataframe) < 3:
-            threshold = threshold - 1
-            a_dataframe = a_dataframe[a_dataframe['games'] >= threshold]
+    games_played_threshold = 5
+    win_rate_threshold = 50
+    #If someone doesn't meet the above threshold then, it will return an empty dataframe.
+    condition_one = a_dataframe['games'] >= games_played_threshold
+    condition_two = a_dataframe['win_rate'] >= win_rate_threshold
+    a_dataframe = a_dataframe[(condition_one & condition_two)]
+    while games_played_threshold > 0:
+        if len(a_dataframe) <= 2:
+            games_played_threshold = games_played_threshold - 1
+            a_dataframe = a_dataframe[a_dataframe['games'] >= games_played_threshold]
         else:
             return a_dataframe
-    print("Huh, did you not play any games?")
+    print(".... You don't have good teammates.")
     return a_dataframe.iloc[0:0]
+
+
+#Not sure if this is needed?
 
 def bug_catcher(an_output):
     '''
@@ -218,3 +225,32 @@ def bug_catcher(an_output):
             return True
     else:
         return False
+
+def conclusion_maker(a_dataframe, option):
+    """
+    Go through the dataframe, depending on what option is selected make a conclusion. Returns a formatted string
+    to print.
+    :param a_dataframe:
+    :return:
+    """
+    returned_string = []
+
+    for index, row in a_dataframe.iterrows():
+        if option == 1:
+            champion = row['Played']
+        elif option == 2:
+            champion = row['Teammate']
+        win_rate = round(row['win_rate'], 2)
+        returned_string.append(f"{champion} at {win_rate}%")
+
+    if len(returned_string) <= 5:
+        returned_string = returned_string[:5]
+
+    returned_string = ", ".join(returned_string[:-1]) + f", and {returned_string[-1]}"
+
+    if option == 1:
+        print(f"You win alot with {returned_string}.")
+    elif option == 2:
+        print(f"When your teammates play these champions, you win alot: {returned_string}.")
+
+    return returned_string
