@@ -90,21 +90,23 @@ def main_champions(synergy_dataframe):
 Oh, I just realized I could probably have bans here as well. I'll add that later.
 '''
 def comparer(list_of_dataframes):
+    """
+    Tur
+    :param list_of_dataframes:
+    :return:
+    """
     everyone_champ_pool = []
     everyone_teammates_pool = []
     for dataframe in list_of_dataframes:
-        if 'Teammates' in dataframe.columns:
-            teammates_in_all_games = dataframe['Teammates'].explode()
-            x_person_preferred = set(teammates_in_all_games)
-
-            everyone_teammates_pool.append(x_person_preferred)
-
-        if 'Played' in dataframe.columns:
-            x_person_played = set(dataframe['Played'])
-            everyone_champ_pool.append(x_person_played)
+        mained = main_champions(dataframe)
+        preffered = favourite_champions(dataframe)
+        teammates_in_all_games = preffered['Teammate']
+        everyone_teammates_pool.append(teammates_in_all_games)
+        x_person_played = mained['Played']
+        everyone_champ_pool.append(x_person_played)
 
 
-    shared_champ_pool = set.union(*everyone_champ_pool)
-    shared_teammates_pool = set.union(*everyone_teammates_pool)
+    shared_champ_pool = set.intersection(*everyone_champ_pool)
+    shared_teammates_pool = set.intersection(*everyone_teammates_pool)
 
     return shared_champ_pool, shared_teammates_pool
