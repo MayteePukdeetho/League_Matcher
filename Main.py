@@ -33,10 +33,9 @@ Not to mention UI and actual menu stuff.
 
 '''
 def intro():
-    print("Hello! Welcome to the League of Legends Matcher. \n")
     print("To get started, I need some quick data about yourself, or, whoever your looking for. \n")
-    player_id = input("Whats your player ID? (that would be the string before the #.)\n")
-    tag_line = input("And whats your tagline? (the part after the #.)\n")
+    player_id = input("Whats that persons player ID? (that would be the string before the #.)\n")
+    tag_line = input("And whats that persons tagline? (the part after the #.)\n")
     region = region_finder()
     try:
         print("Okay, now lets see if we can find you in the database... \n")
@@ -56,9 +55,18 @@ def menu(person_one_df):
         print("1. Get winrate from recent games.")
         print("2. Get winrate from teammates champions.")
         print("3. Input someone elses account.")
+        print("4. Check DuoQueue Compatibility.")
         option = input("What would you like to know about your account?\n")
 
-        if option == "3":
+        if option == "4":
+            second_person_df = intro()
+            list_of_dataframes = [person_one_df, second_person_df]
+            shared_champ_pool, shared_teammates_pool = comparer(list_of_dataframes)
+            print(f"{shared_champ_pool}")
+            print(f"{shared_teammates_pool}")
+
+
+        elif option == "3":
             data = intro()
             menu(data)
             break
@@ -83,5 +91,6 @@ def menu(person_one_df):
         else:
             print("Invalid input! Back from the top.")
 
+print("Hello! Welcome to the League of Legends Matcher. \n")
 data = intro()
 menu(data)

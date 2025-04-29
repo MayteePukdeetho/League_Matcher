@@ -86,4 +86,27 @@ def main_champions(synergy_dataframe):
     return summary
 
 
+'''
+Oh, I just realized I could probably have bans here as well. I'll add that later.
+'''
+def comparer(list_of_dataframes):
+    everyone_champ_pool = []
+    everyone_teammates_pool = []
+    for dataframe in list_of_dataframes:
+        if 'Teammates' in dataframe.columns:
+            hashable_data_type = []
+            for teammate in dataframe['Teammates']:
+                hashable_data_type.extend(teammate)
+            x_person_preferred = set(hashable_data_type)
 
+            everyone_teammates_pool.append(x_person_preferred)
+
+        if 'Played' in dataframe.columns:
+            x_person_played = set(dataframe['Played'])
+            everyone_champ_pool.append(x_person_played)
+
+
+    shared_champ_pool = set.union(*everyone_champ_pool)
+    shared_teammates_pool = set.union(*everyone_teammates_pool)
+
+    return shared_champ_pool, shared_teammates_pool

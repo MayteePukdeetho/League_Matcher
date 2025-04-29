@@ -23,7 +23,7 @@ get the data your looking for
 '''
 
 
-api_key = "RGAPI-1305ca2f-7de1-4b4d-aacd-8f016b911ed5"
+api_key = "RGAPI-2936ce34-d840-46db-89f4-64a24cc8549b"
 def requester(api_url):
     '''
     This calls the api for us using the url provided and checks if we're being rate limited or not.
