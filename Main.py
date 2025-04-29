@@ -11,7 +11,10 @@ player_id = "NoPacksNeeded"
 tag_line = "NA1"
 region = 1
 
-To be honest, this is like 10% done, I'll be working on it throughout the night, you can find the latest version here:
+
+
+
+To be honest, this is like 12% done, I'll be working on it throughout the night, you can find the latest version here:
  https://github.com/MayteePukdeetho/League_Matcher
 
 To summarize, the end goal of this is to:
@@ -56,4 +59,10 @@ except:
 print("Alright.... Lets Calculate some data about ya....")
 print("")
 
-print(favourite_champions(user_puuid, region, api_key))
+person_one_df = get_relevant_data(user_puuid, region, api_key)
+person_one_teammates = favourite_champions(person_one_df)
+person_one_champions = main_champions(person_one_df)
+
+print(f"I see... Very interesting... Looks like you win alot with {person_one_teammates.loc[0,'Teammate']}, {person_one_teammates.loc[1,'Teammate']}, and {person_one_teammates.loc[2,'Teammate']}.\n")
+print(f"And when you play {person_one_champions.loc[0, 'Played']}, {person_one_champions.loc[1, 'Played']}, and {person_one_champions.loc[2,'Played']} you win alot. \n")
+print("Lets see how well an another user would play with you!")

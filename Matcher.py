@@ -27,16 +27,13 @@ def get_relevant_data(puuid, region, api_key):
     return synergy_dataframe
 
 
-def favourite_champions(puuid, region, api_key):
+def favourite_champions(synergy_dataframe):
     '''
     Gets a persons favourite champions to play with (not necessarily play themselves by reformatting to dataframe from
     get_relevant_data, then creating a new summary one.) Filters for champions with 5 or more matches.
-    :param puuid:
-    :param region:
-    :param api_key:
+    :param synergy_dataframe:
     :return:
     '''
-    synergy_dataframe = get_relevant_data(puuid, region, api_key)
     reformatted_row = []
     for idx, row in synergy_dataframe.iterrows():
         teammates = row['Teammates']
@@ -55,6 +52,34 @@ def favourite_champions(puuid, region, api_key):
 
     summary = summary[summary['games'] >= 5]
 
-    return summary.sort_values(by='win_rate', ascending=False)
+    return summary.sort_values(by='win_rate', ascending=False).reset_index(drop=True)
+
+
+def main_champions(synergy_dataframe):
+    """
+    Gets a persons favourite champions to play (reformatting to dataframe from
+    get_relevant_data, then creating a new summary one.) Filters for champions with 5 or more matches.
+    :param synergy_dataframe:
+    :return:
+    """
+    reformatted_row = []
+
+    for idx, row in synergy_dataframe.iterrows():
+        played = row['Played']
+        won = row['Won']
+        reformatted_row.append({'Played' : played, 'Won': won})
+    reformatted_dataframe = pd.DataFrame(reformatted_row)
+
+    summary = reformatted_dataframe.groupby('Played').agg(
+        games=('Won', 'count'),
+        wins=('Won', 'sum'),
+    ).reset_index()
+
+    summary['win_rate'] = (summary['wins'] / summary['games']) * 100
+
+    summary = summary[summary['games'] >= 5]
+
+    return summary.sort_values(by='win_rate', ascending=False).reset_index(drop=True)
+
 
 
